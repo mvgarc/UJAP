@@ -9,9 +9,9 @@ app = Flask(__name__)
 try:
     # La clave API se lee automáticamente de la variable de entorno GEMINI_API_KEY
     client = genai.Client()
-    print("✨ Cliente de Gemini inicializado con éxito.")
+    print("Cliente de Gemini inicializado con éxito.")
 except Exception as e:
-    print(f"🚨 Error al inicializar el cliente de Gemini: {e}")
+    print(f" Error al inicializar el cliente de Gemini: {e}")
     client = None
 
 MODELO_GEMINI = "gemini-1.5-flash"
