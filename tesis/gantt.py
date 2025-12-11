@@ -1,69 +1,83 @@
-import matplotlib.pyplot as plt
-import datetime as dt
+import plotly.express as px
+import pandas as pd
 
-# -----------------------------
-# FECHAS DEL PROYECTO
-# -----------------------------
-# Periodos indicados:
-# Octubre 2025 - Enero 2026
-# Febrero 2026 - Mayo 2026
+# ------------------------------------------------------------
+# DATOS DEL PROYECTO
+# ------------------------------------------------------------
 
-# Para el Gantt usaremos fechas específicas por actividad.
-# Puedes adaptar las fechas si tu cronograma real cambia.
+data = [
+    # Fase I: Diagnóstico
+    ("Revisión documental y bibliográfica", "2025-10-01", "2025-11-15", "Fase I"),
+    ("Aplicación de instrumentos a PyMEs", "2025-11-16", "2025-12-20", "Fase I"),
+    ("Análisis de procesos de conciliación", "2026-01-05", "2026-01-31", "Fase I"),
 
-tasks = [
-    # ---------------- FASE I: Diagnóstico ----------------
-    ("Revisión documental y bibliográfica", "2025-10-01", "2025-11-15"),
-    ("Aplicación de instrumentos a PyMEs", "2025-11-16", "2025-12-20"),
-    ("Análisis de procesos de conciliación", "2026-01-05", "2026-01-31"),
+    # Fase II: Diseño
+    ("Definición de requerimientos (OCR y Dashboard)", "2026-02-01", "2026-02-20", "Fase II"),
+    ("Diseño de arquitectura y Base de Datos", "2026-02-21", "2026-03-15", "Fase II"),
+    ("Prototipado de interfaces (UI/UX)", "2026-03-16", "2026-04-05", "Fase II"),
 
-    # ---------------- FASE II: Diseño ----------------
-    ("Definición de requerimientos (OCR y Dashboard)", "2026-02-01", "2026-02-20"),
-    ("Diseño de arquitectura y Base de Datos", "2026-02-21", "2026-03-15"),
-    ("Prototipado de interfaces (UI/UX)", "2026-03-16", "2026-04-05"),
+    # Fase III: Desarrollo
+    ("Configuración del entorno y Base de Datos", "2026-04-06", "2026-04-20", "Fase III"),
+    ("Desarrollo módulo OCR", "2026-04-21", "2026-05-05", "Fase III"),
+    ("Desarrollo Dashboard y reportes", "2026-05-06", "2026-05-20", "Fase III"),
 
-    # ---------------- FASE III: Desarrollo ----------------
-    ("Configuración del entorno y Base de Datos", "2026-04-06", "2026-04-20"),
-    ("Desarrollo módulo OCR", "2026-04-21", "2026-05-05"),
-    ("Desarrollo Dashboard y reportes", "2026-05-06", "2026-05-20"),
-
-    # ---------------- FASE IV: Validación ----------------
-    ("Pruebas unitarias e integración", "2026-05-21", "2026-06-05"),
-    ("Pruebas piloto con PyMEs", "2026-06-06", "2026-06-20"),
-    ("Ajustes finales y redacción del tomo", "2026-06-21", "2026-07-05"),
+    # Fase IV: Validación
+    ("Pruebas unitarias e integración", "2026-05-21", "2026-06-05", "Fase IV"),
+    ("Pruebas piloto con PyMEs", "2026-06-06", "2026-06-20", "Fase IV"),
+    ("Ajustes finales y redacción del tomo final", "2026-06-21", "2026-07-05", "Fase IV"),
 ]
 
-# -----------------------------
-# GENERACIÓN DEL GANTT
-# -----------------------------
-# Convertimos fechas y creamos posiciones
-task_names = [t[0] for t in tasks]
-start_dates = [dt.datetime.strptime(t[1], "%Y-%m-%d") for t in tasks]
-end_dates = [dt.datetime.strptime(t[2], "%Y-%m-%d") for t in tasks]
-durations = [(end_dates[i] - start_dates[i]).days for i in range(len(tasks))]
+# Crear DataFrame
+df = pd.DataFrame(data, columns=["Tarea", "Inicio", "Fin", "Fase"])
+df["Inicio"] = pd.to_datetime(df["Inicio"])
+df["Fin"] = pd.to_datetime(df["Fin"])
 
-fig, ax = plt.subplots(figsize=(12, 8))
+# ------------------------------------------------------------
+# CREAR DIAGRAMA DE GANTT
+# ------------------------------------------------------------
 
-# Dibujar barras
-for i, task in enumerate(tasks):
-    ax.barh(i, durations[i], left=start_dates[i], height=0.5)
+fig = px.timeline(
+    df,
+    x_start="Inicio",
+    x_end="Fin",
+    y="Tarea",
+    color="Fase",
+    title="Cronograma de la Tesis (Gantt Estilo Profesional)",
+    color_discrete_map={
+        "Fase I": "#6A8EAE",
+        "Fase II": "#9BBF8B",
+        "Fase III": "#EFCB68",
+        "Fase IV": "#E5989B"
+    }
+)
 
-# Etiquetas
-ax.set_yticks(range(len(tasks)))
-ax.set_yticklabels(task_names, fontsize=9)
-ax.invert_yaxis()
+# Orden vertical de tareas invertido
+fig.update_yaxes(autorange="reversed")
 
-ax.set_xlabel("Fecha")
-ax.set_title("Diagrama de Gantt – Desarrollo de la Tesis")
+# Diseño visual más limpio
+fig.update_layout(
+    plot_bgcolor="white",
+    xaxis=dict(
+        showgrid=True,
+        gridcolor="lightgray",
+        tickformat="%b %Y"
+    ),
+    title_font_size=20,
+    legend_title_text="Fases",
+    margin=dict(l=120, r=50, t=80, b=50)
+)
 
-# Formateo de fechas
-fig.autofmt_xdate()
+# Opciones de texto
+fig.update_traces(
+    marker=dict(line_color="black", line_width=0.5),
+    hovertemplate="<b>%{y}</b><br>Inicio: %{base|%Y-%m-%d}<br>Fin: %{x|%Y-%m-%d}"
+)
 
-# -----------------------------
-# GUARDAR IMAGEN
-# -----------------------------
-plt.tight_layout()
-plt.savefig("gantt_tesis.png", dpi=300)
-plt.show()
+# ------------------------------------------------------------
+# GUARDAR IMAGEN (PNG)
+# ------------------------------------------------------------
 
-print("Imagen guardada como 'gantt_tesis.png'")
+fig.write_image("gantt_tesis_estetico_plotly.png", width=1400, height=800)
+fig.show()
+
+print("Imagen guardada como 'gantt_tesis_estetico_plotly.png'")
