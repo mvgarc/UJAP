@@ -123,3 +123,9 @@ def mostrar(sudoku):
 print("\nSUDOKU INICIAL (ANTES DE EVOLUCIONAR):")
 mostrar(SUDOKU_BASE)
 
+solucion = algoritmo_genetico()
+
+print("\nSUDOKU FINAL (DESPUÉS DE EVOLUCIONAR):")
+mostrar(solucion)
+
+print("\nFitness final:", fitness(solucion))
