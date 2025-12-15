@@ -14,3 +14,13 @@ SUDOKU_BASE = [
     [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ]
 
+def obtener_fijas(sudoku):
+    fijas = []
+    for i in range(9):
+        for j in range(9):
+            if sudoku[i][j] != 0:
+                fijas.append((i, j))
+    return fijas
+
+FIJAS = obtener_fijas(SUDOKU_BASE)
+
