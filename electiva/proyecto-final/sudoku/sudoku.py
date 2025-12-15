@@ -55,3 +55,14 @@ def fitness(individuo):
 
     return errores
 
+def seleccion(poblacion):
+    torneo = random.sample(poblacion, 3)
+    torneo.sort(key=lambda x: fitness(x))
+    return torneo[0]
+
+def cruzar(padre1, padre2):
+    hijo = copy.deepcopy(padre1)
+    fila = random.randint(0, 8)
+    hijo[fila] = padre2[fila][:]
+    return hijo
+
