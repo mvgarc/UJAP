@@ -118,3 +118,12 @@ def mostrar_tabla(sudoku, titulo="Sudoku"):
     print("="*40)
     print(df)
 
+print("\n SUDOKU INICIAL (CON ERRORES)")
+mostrar_tabla(SUDOKU_BASE, "Sudoku Inicial")
+
+solucion = algoritmo_genetico()
+
+print("\n SUDOKU FINAL (SOLUCIÓN)")
+mostrar_tabla(solucion, "Sudoku Resuelto")
+
+print("\n Fitness final:", fitness(solucion))
