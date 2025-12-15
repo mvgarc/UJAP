@@ -1,4 +1,5 @@
 import random
+import pandas as pd
 import copy
 
 # Sudoku base (0 = vacío)
@@ -108,24 +109,12 @@ def algoritmo_genetico():
     return poblacion[0]
 
 
-def mostrar(sudoku):
-    print("-" * 25)
-    for i, fila in enumerate(sudoku):
-        if i % 3 == 0 and i != 0:
-            print("-" * 25)
-        for j, num in enumerate(fila):
-            if j % 3 == 0 and j != 0:
-                print("|", end=" ")
-            print(num if num != 0 else ".", end=" ")
-        print()
-    print("-" * 25)
+def mostrar_tabla(sudoku, titulo="Sudoku"):
+    df = pd.DataFrame(sudoku,
+                      columns=[f"C{j+1}" for j in range(9)],
+                      index=[f"F{i+1}" for i in range(9)])
+    print("\n" + "="*40)
+    print(titulo)
+    print("="*40)
+    print(df)
 
-print("\nSUDOKU INICIAL (ANTES DE EVOLUCIONAR):")
-mostrar(SUDOKU_BASE)
-
-solucion = algoritmo_genetico()
-
-print("\nSUDOKU FINAL (DESPUÉS DE EVOLUCIONAR):")
-mostrar(solucion)
-
-print("\nFitness final:", fitness(solucion))
