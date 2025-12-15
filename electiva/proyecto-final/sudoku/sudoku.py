@@ -73,3 +73,29 @@ def mutar(individuo, prob=0.1):
             if (i, j) not in FIJAS:
                 individuo[i][j] = random.randint(1, 9)
 
+def algoritmo_genetico():
+    poblacion = [crear_individuo() for _ in range(200)]
+
+    for generacion in range(1000):
+        poblacion.sort(key=lambda x: fitness(x))
+
+        if fitness(poblacion[0]) == 0:
+            print(f"Solución encontrada en generación {generacion}")
+            return poblacion[0]
+
+        nueva_poblacion = poblacion[:10]  # elitismo
+
+        while len(nueva_poblacion) < 200:
+            p1 = seleccion(poblacion)
+            p2 = seleccion(poblacion)
+            hijo = cruzar(p1, p2)
+            mutar(hijo)
+            nueva_poblacion.append(hijo)
+
+        poblacion = nueva_poblacion
+
+        if generacion % 50 == 0:
+            print(f"Gen {generacion} | Mejor fitness: {fitness(poblacion[0])}")
+
+    return poblacion[0]
+
