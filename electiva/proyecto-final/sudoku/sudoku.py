@@ -66,3 +66,10 @@ def cruzar(padre1, padre2):
     hijo[fila] = padre2[fila][:]
     return hijo
 
+def mutar(individuo, prob=0.1):
+    for _ in range(2):
+        if random.random() < prob:
+            i, j = random.randint(0, 8), random.randint(0, 8)
+            if (i, j) not in FIJAS:
+                individuo[i][j] = random.randint(1, 9)
+
