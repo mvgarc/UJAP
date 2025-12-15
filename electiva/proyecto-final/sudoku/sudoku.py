@@ -24,3 +24,11 @@ def obtener_fijas(sudoku):
 
 FIJAS = obtener_fijas(SUDOKU_BASE)
 
+def crear_individuo():
+    individuo = copy.deepcopy(SUDOKU_BASE)
+    for i in range(9):
+        for j in range(9):
+            if (i, j) not in FIJAS:
+                individuo[i][j] = random.randint(1, 9)
+    return individuo
+
