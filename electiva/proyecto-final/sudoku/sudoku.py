@@ -99,3 +99,7 @@ def algoritmo_genetico():
 
     return poblacion[0]
 
+def mostrar(sudoku):
+    for fila in sudoku:
+        print(fila)
+
