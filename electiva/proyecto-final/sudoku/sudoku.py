@@ -76,12 +76,19 @@ def mutar(individuo, prob=0.1):
 def algoritmo_genetico():
     poblacion = [crear_individuo() for _ in range(200)]
 
+    mejor_fitness_historico = float("inf")
+
     for generacion in range(1000):
         poblacion.sort(key=lambda x: fitness(x))
+        mejor = poblacion[0]
+        fit = fitness(mejor)
 
-        if fitness(poblacion[0]) == 0:
-            print(f"Solución encontrada en generación {generacion}")
-            return poblacion[0]
+        if fit < mejor_fitness_historico:
+            mejor_fitness_historico = fit
+
+        if fit == 0:
+            print(f"\n Solución encontrada en generación {generacion}")
+            return mejor
 
         nueva_poblacion = poblacion[:10]  # elitismo
 
@@ -95,9 +102,11 @@ def algoritmo_genetico():
         poblacion = nueva_poblacion
 
         if generacion % 50 == 0:
-            print(f"Gen {generacion} | Mejor fitness: {fitness(poblacion[0])}")
+            print(f"Gen {generacion} | Mejor fitness: {fit}")
 
+    print("\n No se encontró solución perfecta")
     return poblacion[0]
+
 
 def mostrar(sudoku):
     print("-" * 25)
@@ -111,4 +120,6 @@ def mostrar(sudoku):
         print()
     print("-" * 25)
 
+print("\nSUDOKU INICIAL (ANTES DE EVOLUCIONAR):")
+mostrar(SUDOKU_BASE)
 
