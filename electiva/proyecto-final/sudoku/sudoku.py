@@ -100,6 +100,15 @@ def algoritmo_genetico():
     return poblacion[0]
 
 def mostrar(sudoku):
-    for fila in sudoku:
-        print(fila)
+    print("-" * 25)
+    for i, fila in enumerate(sudoku):
+        if i % 3 == 0 and i != 0:
+            print("-" * 25)
+        for j, num in enumerate(fila):
+            if j % 3 == 0 and j != 0:
+                print("|", end=" ")
+            print(num if num != 0 else ".", end=" ")
+        print()
+    print("-" * 25)
+
 
