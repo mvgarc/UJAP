@@ -79,12 +79,11 @@ def mutar(individuo, prob=0.2):
     if random.random() < prob:
         fila = random.randint(0, 8)
 
-        # posiciones no fijas en esa fila
-        libres = [j for j in range(9) if (fila, j) not in FIJAS]
-
-        if len(libres) >= 2:
-            a, b = random.sample(libres, 2)
-            individuo[fila][a], individuo[fila][b] = individuo[fila][b], individuo[fila][a]
+        if len(set(individuo[fila])) < 9:
+            libres = [j for j in range(9) if (fila, j) not in FIJAS]
+            if len(libres) >= 2:
+                a, b = random.sample(libres, 2)
+                individuo[fila][a], individuo[fila][b] = individuo[fila][b], individuo[fila][a]
 
 
 def algoritmo_genetico():
