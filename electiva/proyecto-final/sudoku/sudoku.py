@@ -82,18 +82,38 @@ def mutar(individuo, prob=0.1):
             if (i, j) not in FIJAS:
                 individuo[i][j] = random.randint(1, 9)
 
+
+def busqueda_local(individuo, intentos=20):
+    mejor = copy.deepcopy(individuo)
+    mejor_fitness = fitness(mejor)
+
+    for _ in range(intentos):
+        candidato = copy.deepcopy(mejor)
+
+        fila = random.randint(0, 8)
+        libres = [j for j in range(9) if (fila, j) not in FIJAS]
+
+        if len(libres) < 2:
+            continue
+
+        a, b = random.sample(libres, 2)
+        candidato[fila][a], candidato[fila][b] = candidato[fila][b], candidato[fila][a]
+
+        f = fitness(candidato)
+        if f < mejor_fitness:
+            mejor = candidato
+            mejor_fitness = f
+
+    return mejor
+
+
 def algoritmo_genetico():
     poblacion = [crear_individuo() for _ in range(200)]
-
-    mejor_fitness_historico = float("inf")
 
     for generacion in range(1000):
         poblacion.sort(key=lambda x: fitness(x))
         mejor = poblacion[0]
         fit = fitness(mejor)
-
-        if fit < mejor_fitness_historico:
-            mejor_fitness_historico = fit
 
         if fit == 0:
             print(f"\n Solución encontrada en generación {generacion}")
@@ -104,8 +124,13 @@ def algoritmo_genetico():
         while len(nueva_poblacion) < 200:
             p1 = seleccion(poblacion)
             p2 = seleccion(poblacion)
+
             hijo = cruzar(p1, p2)
-            mutar(hijo)
+            mutar(hijo, prob=0.2)
+
+            # AQUI ENTRA EL HÍBRIDO
+            hijo = busqueda_local(hijo, intentos=30)
+
             nueva_poblacion.append(hijo)
 
         poblacion = nueva_poblacion
