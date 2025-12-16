@@ -117,21 +117,24 @@ def algoritmo_genetico():
     return poblacion[0]
 
 
-def mostrar_tabla(sudoku, titulo="Sudoku"):
-    df = pd.DataFrame(sudoku,
-                      columns=[f"C{j+1}" for j in range(9)],
-                      index=[f"F{i+1}" for i in range(9)])
-    print("\n" + "="*40)
-    print(titulo)
-    print("="*40)
-    print(df)
+def mostrar_tabla_ascii(sudoku, titulo):
+    print("\n" + "="*45)
+    print(titulo.center(45))
+    print("="*45)
 
-print("\n SUDOKU INICIAL (CON ERRORES)")
-mostrar_tabla(SUDOKU_BASE, "Sudoku Inicial")
+    print("     " + " ".join([f"C{i+1}" for i in range(9)]))
+    print("   +" + "---+" * 9)
+
+    for i, fila in enumerate(sudoku):
+        fila_str = " | ".join(str(x) for x in fila)
+        print(f"F{i+1} | {fila_str} |")
+        if (i+1) % 3 == 0:
+            print("   +" + "---+" * 9)
 
 solucion = algoritmo_genetico()
 
-print("\n SUDOKU FINAL (SOLUCIÓN)")
-mostrar_tabla(solucion, "Sudoku Resuelto")
+mostrar_tabla_ascii(SUDOKU_BASE, "SUDOKU INICIAL")
+mostrar_tabla_ascii(solucion, "SUDOKU FINAL")
+
 
 print("\n Fitness final:", fitness(solucion))
