@@ -44,23 +44,25 @@ def crear_individuo():
 def fitness(individuo):
     errores = 0
 
+    # Filas
     for fila in individuo:
         errores += 9 - len(set(fila))
 
+    # Columnas
     for col in range(9):
         columna = [individuo[fila][col] for fila in range(9)]
         errores += 9 - len(set(columna))
 
+    # Subcuadros
     for i in range(0, 9, 3):
         for j in range(0, 9, 3):
             bloque = []
             for x in range(3):
                 for y in range(3):
                     bloque.append(individuo[i+x][j+y])
-            errores += 2 * (9 - len(set(bloque)))  # más peso
+            errores += 9 - len(set(bloque))
 
     return errores
-
 
 def seleccion(poblacion):
     torneo = random.sample(poblacion, 3)
