@@ -28,10 +28,18 @@ FIJAS = obtener_fijas(SUDOKU_BASE)
 def crear_individuo():
     individuo = copy.deepcopy(SUDOKU_BASE)
     for i in range(9):
+        numeros = set(range(1, 10))
         for j in range(9):
-            if (i, j) not in FIJAS:
-                individuo[i][j] = random.randint(1, 9)
+            if individuo[i][j] != 0:
+                numeros.discard(individuo[i][j])
+        numeros = list(numeros)
+        random.shuffle(numeros)
+
+        for j in range(9):
+            if individuo[i][j] == 0:
+                individuo[i][j] = numeros.pop()
     return individuo
+
 
 def fitness(individuo):
     errores = 0
