@@ -75,12 +75,17 @@ def cruzar(padre1, padre2):
     hijo[fila] = padre2[fila][:]
     return hijo
 
-def mutar(individuo, prob=0.1):
-    for _ in range(2):
-        if random.random() < prob:
-            i, j = random.randint(0, 8), random.randint(0, 8)
-            if (i, j) not in FIJAS:
-                individuo[i][j] = random.randint(1, 9)
+def mutar(individuo, prob=0.2):
+    if random.random() < prob:
+        fila = random.randint(0, 8)
+
+        # posiciones no fijas en esa fila
+        libres = [j for j in range(9) if (fila, j) not in FIJAS]
+
+        if len(libres) >= 2:
+            a, b = random.sample(libres, 2)
+            individuo[fila][a], individuo[fila][b] = individuo[fila][b], individuo[fila][a]
+
 
 def algoritmo_genetico():
     poblacion = [crear_individuo() for _ in range(200)]
