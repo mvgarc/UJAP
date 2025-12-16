@@ -44,25 +44,23 @@ def crear_individuo():
 def fitness(individuo):
     errores = 0
 
-    # Filas
     for fila in individuo:
         errores += 9 - len(set(fila))
 
-    # Columnas
     for col in range(9):
         columna = [individuo[fila][col] for fila in range(9)]
         errores += 9 - len(set(columna))
 
-    # Subcuadros
     for i in range(0, 9, 3):
         for j in range(0, 9, 3):
             bloque = []
             for x in range(3):
                 for y in range(3):
                     bloque.append(individuo[i+x][j+y])
-            errores += 9 - len(set(bloque))
+            errores += 2 * (9 - len(set(bloque)))  # más peso
 
     return errores
+
 
 def seleccion(poblacion):
     torneo = random.sample(poblacion, 3)
@@ -75,16 +73,12 @@ def cruzar(padre1, padre2):
     hijo[fila] = padre2[fila][:]
     return hijo
 
-def mutar(individuo, prob=0.2):
-    if random.random() < prob:
-        fila = random.randint(0, 8)
-
-        if len(set(individuo[fila])) < 9:
-            libres = [j for j in range(9) if (fila, j) not in FIJAS]
-            if len(libres) >= 2:
-                a, b = random.sample(libres, 2)
-                individuo[fila][a], individuo[fila][b] = individuo[fila][b], individuo[fila][a]
-
+def mutar(individuo, prob=0.1):
+    for _ in range(2):
+        if random.random() < prob:
+            i, j = random.randint(0, 8), random.randint(0, 8)
+            if (i, j) not in FIJAS:
+                individuo[i][j] = random.randint(1, 9)
 
 def algoritmo_genetico():
     poblacion = [crear_individuo() for _ in range(200)]
