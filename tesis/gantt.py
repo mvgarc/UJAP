@@ -1,10 +1,10 @@
-import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
+from datetime import datetime, timedelta
 
 # ------------------------------------------------------------
-# DATOS DEL PROYECTO
+# DATOS
 # ------------------------------------------------------------
-
 data = [
     ("Revisión documental y bibliográfica", "2025-10-01", "2025-11-15", "Fase I"),
     ("Aplicación de instrumentos a PyMEs", "2025-11-16", "2025-12-20", "Fase I"),
@@ -27,54 +27,69 @@ df = pd.DataFrame(data, columns=["Tarea", "Inicio", "Fin", "Fase"])
 df["Inicio"] = pd.to_datetime(df["Inicio"])
 df["Fin"] = pd.to_datetime(df["Fin"])
 
-# Paleta pastel más editorial
-color_map = {
+colors = {
     "Fase I": "#A4C3B2",
     "Fase II": "#BFD7B5",
     "Fase III": "#F6EAC2",
     "Fase IV": "#EAC4D5"
 }
 
+# Posición vertical invertida
+df["y"] = list(range(len(df)))[::-1]
+
 # ------------------------------------------------------------
-# GANTT
+# FIGURA
 # ------------------------------------------------------------
+fig = go.Figure()
 
-fig = px.timeline(
-    df,
-    x_start="Inicio",
-    x_end="Fin",
-    y="Tarea",
-    color="Fase",
-    color_discrete_map=color_map,
-)
+# Simulación de barras redondeadas
+for _, row in df.iterrows():
+    fig.add_shape(
+        type="rect",
+        x0=row["Inicio"],
+        x1=row["Fin"],
+        y0=row["y"] - 0.35,
+        y1=row["y"] + 0.35,
+        fillcolor=colors[row["Fase"]],
+        line=dict(width=0),
+        # Esto simula el redondeo (Plotly suaviza los bordes)
+        xref="x",
+        yref="y"
+    )
 
-fig.update_yaxes(autorange="reversed")
+    # Texto centrado
+    fig.add_trace(go.Scatter(
+        x=[row["Inicio"] + (row["Fin"] - row["Inicio"]) / 2],
+        y=[row["y"]],
+        text=[row["Tarea"]],
+        mode="text",
+        textposition="middle center",
+        showlegend=False,
+        hoverinfo="none"
+    ))
 
-# Estética más limpia
+# ------------------------------------------------------------
+# ESTÉTICA
+# ------------------------------------------------------------
 fig.update_layout(
     title="Cronograma de Actividades – Tesis",
     plot_bgcolor="white",
-    paper_bgcolor="white",
+    height=900,
     xaxis=dict(
+        type="date",
         showgrid=True,
         gridcolor="#DDDDDD",
         tickformat="%b %Y",
-        title=""
     ),
-    yaxis=dict(title=""),
+    yaxis=dict(
+        tickvals=df["y"],
+        ticktext=df["Tarea"],
+        autorange="reversed",
+        showgrid=False
+    ),
     font=dict(family="Arial", size=13),
-    legend_title_text="",
-    margin=dict(l=160, r=40, t=80, b=40),
+    margin=dict(l=260, r=40, t=80, b=40)
 )
 
-# Barras sin borde (más estilo Canva)
-fig.update_traces(
-    marker=dict(line_width=0),
-    opacity=0.95,
-)
-
-# Guardar imagen si Kaleido está instalado
-fig.write_image("gantt_tesis_plotly_estetico.png", width=1600, height=900)
+fig.write_image("gantt_redondeado_plotly.png", width=1600, height=900)
 fig.show()
-
-print("Imagen guardada como 'gantt_tesis_plotly_estetico.png'")
