@@ -35,3 +35,5 @@ def eliminar(db: Session, usuario_id: int):
     db.delete(usuario)
     db.commit()
     return usuario
+def creacion_google(db: Session, usuario_id:int):
+    return usuario
